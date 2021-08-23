@@ -1,15 +1,33 @@
-const {response} = require('express');
+const {response, request} = require('express');
 
 
-const usuariosGet= (req, res= response)=> {
+const usuariosGet= (req= request, res= response)=> {
+    const {q, nombre, apikey, page= 1, limit= 1}= req.query;
+
+    if(nombre === undefined){
+        res.json({
+            status: "error",
+            msg: "el nombre es requerido",
+        });
+        return
+    }
+
     res.json({
         msg: "get API- controlador",
+        q,
+        nombre,
+        apikey,
+        page,
+        limit
     })
 }
 
 const usuariosPut= (req, res= response)=> {
+    const id= req.params.id;
+
     res.json({
         msg: "put API- Controlador",
+        id
     })
 }
 
