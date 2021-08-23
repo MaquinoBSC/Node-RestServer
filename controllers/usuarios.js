@@ -14,8 +14,13 @@ const usuariosPut= (req, res= response)=> {
 }
 
 const usuariosPost= (req, res= response)=> {
+    const body= req.body;
+    const {nombre}= req.body;
+
     res.json({
         msg: "Post API- Controlador",
+        body,
+        nombre
     })
 }
 
