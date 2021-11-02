@@ -4,25 +4,15 @@ const bcryptjs= require('bcryptjs');
 const Usuario= require('../models/usuario');
 
 
-const usuariosGet= (req= request, res= response)=> {
-    const {q, nombre, apikey, page= 1, limit= 1}= req.query;
-
-    if(nombre === undefined){
-        res.json({
-            status: "error",
-            msg: "el nombre es requerido",
-        });
-        return
-    }
+const usuariosGet= async(req= request, res= response)=> {
+    const { limit= 5, desde= 0 } = req.query;
+    const usuarios= await Usuario.find()
+        .skip(Number(desde))
+        .limit(Number(limit))
 
     res.json({
-        msg: "get API- controlador",
-        q,
-        nombre,
-        apikey,
-        page,
-        limit
-    })
+        usuarios
+    });
 }
 
 const usuariosPut= async(req, res= response)=> {
@@ -49,14 +39,6 @@ const usuariosPost= async (req, res= response)=> {
     const {nombre, correo, password, rol}= req.body;
     const usuario= new Usuario({nombre, correo, password, rol});
 
-    // Verificar si el correo existe
-    // const existeEmail= await Usuario.findOne({correo: correo});
-    // if(existeEmail){
-    //     return res.status(400).json({
-    //         msg: 'El correo ya existe'
-    //     })
-    // }
-
     // encriptar contraseña
     const salt= bcryptjs.genSaltSync();
     usuario.password= bcryptjs.hashSync(password, salt);
@@ -64,10 +46,7 @@ const usuariosPost= async (req, res= response)=> {
     // guardar en base de datos
     await usuario.save();
 
-    res.json({
-        msg: "Post API- Controlador",
-        usuario
-    });
+    res.json(usuario);
 }
 
 const usuariosDelete= (req, res= response)=> {
