@@ -10,9 +10,10 @@ const {
     
 const { esRoleValido, yaExisteEmail, existeUsuarioPorId } = require('../helpers/db-validators');
 
-const { validarCampos }= require('../middlewares/validar-campos');
-const { validarJWT } = require('../middlewares/validar-jwt');
-const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
+// const { validarCampos }= require('../middlewares/validar-campos');
+// const { validarJWT } = require('../middlewares/validar-jwt');
+// const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
+const { validarCampos, validarJWT, esAdminRole, tieneRole} = require('../middlewares');
 
 const router= Router();
 
@@ -26,7 +27,7 @@ router.put('/:id', [
     validarCampos
 ], usuariosPut);
 
-router.post('/',[
+router.post('/', [
     check('nombre', "El nombre es obligatorio").not().isEmpty(),
     check('password', "El password debe de ser mas de 6 letras").isLength({min: 6}),
     check('correo', "El correo no es válido").isEmail(),
