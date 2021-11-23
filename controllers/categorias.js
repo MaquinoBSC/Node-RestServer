@@ -5,13 +5,20 @@ const { Categoria }= require('../models');
 // obtenerCategorias -paginado -total -populate
 const obtenerCategorias= async(req= request, res= response)=> {
     const { limit= 5, desde= 0 }= req.query;
+    const query= {estado: true };
     
-    const categorias= await Categoria.find()
-        .skip( Number(desde) )
-        .limit( Number(limit) )
-        .populate('usuario');
+    const [total, categorias]= await Promise.all([
+        Categoria.countDocuments(),
+        Categoria.find(query)
+            .skip( Number(desde) )
+            .limit( Number(limit) )
+            .populate('usuario')
+    ])
         
-    res.status(200).json( categorias );
+    res.status(200).json({
+        total,
+        categorias
+    });
 }
 
 
