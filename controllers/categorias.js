@@ -5,11 +5,11 @@ const { Categoria }= require('../models');
 // obtenerCategorias -paginado -total -populate
 const obtenerCategorias= async(req= request, res= response)=> {
     const { limit= 5, desde= 0 }= req.query;
-    const query= {estado: true };
+    const query= { estado: true };
     
     const [total, categorias]= await Promise.all([
-        Categoria.countDocuments(),
-        Categoria.find(query)
+        Categoria.countDocuments(query),
+        Categoria.find()
             .skip( Number(desde) )
             .limit( Number(limit) )
             .populate('usuario')
@@ -72,13 +72,20 @@ const actualizarCategoria= async (req= request, res= response)=> {
         });
     }
 
-    const categoria= await Categoria.findByIdAndUpdate({_id: id}, data);
+    const categoria= await Categoria.findByIdAndUpdate(id, data);
 
     res.status(200).json(categoria);
 }
 
 
 // borrarCategoria -estado:false
+const borrarCategoria= async (req= request, res= response)=> {
+    const { id }= req.params;
+
+    const categoria= await Categoria.findByIdAndUpdate(id, { estado: false });
+    
+    res.status(200).json( categoria );
+}
 
 
 module.exports= {
@@ -86,4 +93,5 @@ module.exports= {
     obtenerCategoria,
     crearCategoria,
     actualizarCategoria,
+    borrarCategoria
 }
