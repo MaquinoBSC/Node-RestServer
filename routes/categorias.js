@@ -3,19 +3,19 @@ const { check } = require('express-validator');
 
 const { validarCampos }= require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares');
-const { crearCategoria } = require('../controllers/categorias');
+const { crearCategoria, obtenerCategorias } = require('../controllers/categorias');
 
 const router= Router();
 
 
 //Obtener todas las categorias -public
-router.get('/', (req, res)=> {
-    res.json('OK')
-});
+router.get('/', obtenerCategorias);
 
 
 //Obtener una categoria por id -public
-router.get('/:id', (req, res)=> {
+router.get('/:id', [
+    // check('id').custom( existeCategoria )
+], (req, res)=> {
     res.json('OK')
 });
 
