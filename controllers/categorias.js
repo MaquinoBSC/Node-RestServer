@@ -49,6 +49,26 @@ const crearCategoria= async (req=request, res= response)=> {
 
 
 // actualizarCategoria 
+const actualizarCategoria= async (req= request, res= response)=> {
+    const { id }= req.params;
+    const { nombre }= req.body;
+
+    const data= {};
+
+    if(nombre){
+        data.nombre= nombre.toUpperCase();
+        data.usuario= req.user._id;
+    }
+    else{
+        res.status(200).json({
+            msg: "No hay datos para actualizar"
+        });
+    }
+
+    const categoria= await Categoria.findByIdAndUpdate({_id: id}, data);
+
+    res.status(200).json(categoria);
+}
 
 
 // borrarCategoria -estado:false
@@ -58,4 +78,5 @@ module.exports= {
     obtenerCategorias,
     obtenerCategoria,
     crearCategoria,
+    actualizarCategoria,
 }
