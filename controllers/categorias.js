@@ -12,7 +12,7 @@ const obtenerCategorias= async(req= request, res= response)=> {
         Categoria.find()
             .skip( Number(desde) )
             .limit( Number(limit) )
-            .populate('usuario')
+            .populate('usuario', ['nombre', 'correo', 'rol'])
     ])
         
     res.status(200).json({
@@ -58,21 +58,22 @@ const crearCategoria= async (req=request, res= response)=> {
 // actualizarCategoria 
 const actualizarCategoria= async (req= request, res= response)=> {
     const { id }= req.params;
-    const { nombre }= req.body;
+    const { estado, usuario, ...data }= req.body;
 
-    const data= {};
+    data.nombre= data.nombre.toUpperCase();
+    data.usuario= req.user._id;
 
-    if(nombre){
-        data.nombre= nombre.toUpperCase();
-        data.usuario= req.user._id;
-    }
-    else{
-        res.status(200).json({
-            msg: "No hay datos para actualizar"
-        });
-    }
+    // if(nombre){
+    //     data.nombre= nombre.toUpperCase();
+    //     data.usuario= req.user._id;
+    // }
+    // else{
+    //     res.status(200).json({
+    //         msg: "No hay datos para actualizar"
+    //     });
+    // }
 
-    const categoria= await Categoria.findByIdAndUpdate(id, data);
+    const categoria= await Categoria.findByIdAndUpdate(id, data, { new: true });
 
     res.status(200).json(categoria);
 }
@@ -82,7 +83,7 @@ const actualizarCategoria= async (req= request, res= response)=> {
 const borrarCategoria= async (req= request, res= response)=> {
     const { id }= req.params;
 
-    const categoria= await Categoria.findByIdAndUpdate(id, { estado: false });
+    const categoria= await Categoria.findByIdAndUpdate(id, { estado: false }, { new: true });
     
     res.status(200).json( categoria );
 }
