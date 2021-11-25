@@ -1,11 +1,12 @@
 const { Router }= require('express');
 const { check }= require('express-validator');
-const { crearProducto }= require('../controllers/productos');
+const { crearProducto, obtenerProductos }= require('../controllers/productos');
 const { existeCategoriaPorId } = require('../helpers/db-validators');
 const { validarJWT, validarCampos } = require('../middlewares');
 
 const router= Router();
 
+router.get('/', obtenerProductos);
 
 router.post('/', [
     validarJWT,

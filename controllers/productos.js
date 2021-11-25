@@ -2,9 +2,28 @@ const { request, response } = require("express");
 const { Categoria, Producto } = require("../models");
 
 
+const obtenerProductos= async (req= request, res= response)=> {
+    const { limit= 5, desde= 0 }= req.body;
+    const query= { estado: true };
+
+    const [count, productos]= await Promise.all([
+        Producto.countDocuments(query),
+        Producto.find(query)
+            .skip(desde)
+            .limit(limit)
+            .populate('usuario', ['nombre', 'correo', 'rol'])
+            .populate('categoria', ['nombre'])
+    ]);
+
+    res.status(200).json({
+        count,
+        productos
+    });
+}
+
+
 const crearProducto= async (req= request, res= response)=> {
     const { nombre, precio, categoria, descripcion }= req.body;
-    
     const categoriaDB= await Categoria.findById({ "_id": categoria });
     
     let data= {
@@ -20,7 +39,6 @@ const crearProducto= async (req= request, res= response)=> {
                 msg: "El precio debe ser un numero"
             })
         }
-
         data.precio= precio;
     }
 
@@ -32,5 +50,6 @@ const crearProducto= async (req= request, res= response)=> {
 
 
 module.exports= {
-    crearProducto
+    crearProducto,
+    obtenerProductos,
 }
