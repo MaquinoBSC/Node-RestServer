@@ -1,12 +1,20 @@
 const { Router }= require('express');
 const { check }= require('express-validator');
-const { crearProducto, obtenerProductos }= require('../controllers/productos');
-const { existeCategoriaPorId } = require('../helpers/db-validators');
+const { crearProducto, obtenerProductos, obtenerProducto }= require('../controllers/productos');
+const { existeCategoriaPorId, existeProductoPorId } = require('../helpers/db-validators');
 const { validarJWT, validarCampos } = require('../middlewares');
 
 const router= Router();
 
+//Obtener todos los productos
 router.get('/', obtenerProductos);
+
+//Obtener un producto en especifico
+router.get('/:id', [
+    check('id', "EL id no es valido").isMongoId(),
+    check('id').custom((id)=> existeProductoPorId(id)),
+    validarCampos
+], obtenerProducto);
 
 router.post('/', [
     validarJWT,

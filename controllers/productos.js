@@ -3,7 +3,7 @@ const { Categoria, Producto } = require("../models");
 
 
 const obtenerProductos= async (req= request, res= response)=> {
-    const { limit= 5, desde= 0 }= req.body;
+    const { limit= 5, desde= 0 }= req.query;
     const query= { estado: true };
 
     const [count, productos]= await Promise.all([
@@ -19,6 +19,22 @@ const obtenerProductos= async (req= request, res= response)=> {
         count,
         productos
     });
+}
+
+
+const obtenerProducto= async (req= request, res= response)=> {
+    const { id }= req.params;
+
+    try {
+        const producto= await Producto.findById({ "_id": id })
+            .populate('usuario', ['nombre', 'correo', 'rol'])
+            .populate('categoria', ['nombre']);
+
+            res.status(200).json(producto);
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
@@ -52,4 +68,5 @@ const crearProducto= async (req= request, res= response)=> {
 module.exports= {
     crearProducto,
     obtenerProductos,
+    obtenerProducto,
 }
