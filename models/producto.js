@@ -27,6 +27,7 @@ const ProductosSchema= Schema({
     },
     descripcion: {
         type: String,
+        required: true,
     },
     disponible: {
         type: Boolean,
