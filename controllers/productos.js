@@ -64,9 +64,32 @@ const crearProducto= async (req= request, res= response)=> {
     res.json( producto );
 }
 
+const actualizarProducto= async (req= request, res= response)=> {
+    const { id }= req.params;
+    const { nombre, precio, categoria, descripcion, disponible }= req.body;
+    const categoriaDB= await Categoria.findById(categoria);
+
+    data= {
+        nombre,
+        precio,
+        categoria: categoriaDB._id,
+        descripcion,
+        disponible,
+        usuario: req.user._id,
+    };
+
+    const producto= await Producto.findByIdAndUpdate(id, data, { new: true })
+        .populate( 'usuario', ['nombre', 'rol', 'correo'])
+        .populate('categoria', 'nombre');
+
+    res.status(200).json( producto );
+}
+
+
 
 module.exports= {
     crearProducto,
     obtenerProductos,
     obtenerProducto,
+    actualizarProducto,
 }
