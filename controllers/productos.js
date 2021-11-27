@@ -86,10 +86,23 @@ const actualizarProducto= async (req= request, res= response)=> {
 }
 
 
+const borrarProducto= async (req= request, res= response)=> {
+    const { id }= req.params;
+
+    const producto= await Producto.findByIdAndUpdate(id, { estado: false }, { new: true })
+        .populate('usuario', ['nombre', 'rol', 'corroe'])
+        .populate('categoria', 'nombre');
+
+
+    res.status(200).json( producto );
+}
+
+
 
 module.exports= {
     crearProducto,
     obtenerProductos,
     obtenerProducto,
     actualizarProducto,
+    borrarProducto,
 }

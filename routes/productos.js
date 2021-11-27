@@ -1,8 +1,8 @@
 const { Router }= require('express');
 const { check }= require('express-validator');
-const { crearProducto, obtenerProductos, obtenerProducto, actualizarProducto }= require('../controllers/productos');
+const { crearProducto, obtenerProductos, obtenerProducto, actualizarProducto, borrarProducto }= require('../controllers/productos');
 const { existeCategoriaPorId, existeProductoPorId } = require('../helpers/db-validators');
-const { validarJWT, validarCampos } = require('../middlewares');
+const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 
 const router= Router();
 
@@ -42,6 +42,15 @@ router.put('/:id', [
     check('disponible', "El valor de disponibilidad debe de ser true o false").isBoolean(),
     validarCampos
 ], actualizarProducto );
+
+
+router.delete('/:id', [
+    validarJWT,
+    esAdminRole,
+    check('id', "El id no es valido").isMongoId(),
+    check('id').custom((id)=> existeProductoPorId(id)),
+    validarCampos
+], borrarProducto);
 
 
 module.exports= router;
