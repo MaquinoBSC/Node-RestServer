@@ -42,6 +42,15 @@ const existeProductoPorId= async (id)=> {
 }
 
 
+const existeProductoPorNombre= async(nombre)=> {
+    const existeProducto= await Producto.findOne({ nombre });
+
+    if(existeProducto){
+        throw new Error('EL producto ya existe');
+    }
+}
+
+
 
 module.exports= {
     esRoleValido,
@@ -49,4 +58,5 @@ module.exports= {
     existeUsuarioPorId,
     existeCategoriaPorId,
     existeProductoPorId,
+    existeProductoPorNombre,
 };

@@ -90,7 +90,7 @@ const borrarProducto= async (req= request, res= response)=> {
     const { id }= req.params;
 
     const producto= await Producto.findByIdAndUpdate(id, { estado: false }, { new: true })
-        .populate('usuario', ['nombre', 'rol', 'corroe'])
+        .populate('usuario', ['nombre', 'rol', 'correo'])
         .populate('categoria', 'nombre');
 
 

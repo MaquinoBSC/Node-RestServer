@@ -1,7 +1,7 @@
 const { Router }= require('express');
 const { check }= require('express-validator');
 const { crearProducto, obtenerProductos, obtenerProducto, actualizarProducto, borrarProducto }= require('../controllers/productos');
-const { existeCategoriaPorId, existeProductoPorId } = require('../helpers/db-validators');
+const { existeCategoriaPorId, existeProductoPorId, existeProductoPorNombre } = require('../helpers/db-validators');
 const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 
 const router= Router();
@@ -19,6 +19,7 @@ router.get('/:id', [
 router.post('/', [
     validarJWT,
     check('nombre', "El nombre es requerido").not().isEmpty(),
+    check('nombre').custom((nombre)=> existeProductoPorNombre(nombre)),
     check('categoria', "La categoria es requerida").not().isEmpty(),
     check('categoria', "La categoria no es valida").isMongoId(),
     check('categoria').custom((categoria)=> existeCategoriaPorId(categoria)),
