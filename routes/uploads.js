@@ -10,9 +10,9 @@ const router= Router();
 router.post('/', validarArchivoSubir, cargarArchivo);
 
 router.put('/:coleccion/:id', [
-    validarArchivoSubir,
     check('id', "EL id no es valido").isMongoId(),
     check('coleccion').custom((coleccion)=> coleccionesPermitidas(coleccion, ['usuarios', 'productos'])),
+    validarArchivoSubir,
     validarCampos
 ], actualizarImagen)
 
