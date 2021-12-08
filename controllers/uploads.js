@@ -106,18 +106,17 @@ const servirArchivo= async (req= request, res= response)=> {
                 return res.status(500).json({ msg: "Se me olvido validar esto"});
         }
     
-        // Limpiar imagenes previas
+        // Si existe imagen la servimos
         if(modelo.img){
-            //hay que borrar la img del servidor
             const pahtImagen= path.join(__dirname, '../uploads', coleccion, modelo.img);
             if(fs.existsSync(pahtImagen)){
                 return res.sendFile( pahtImagen );
             }
         }
     
-        res.json({
-            msg: "Falta placeholder"
-        });
+        //Si no hay imagen servimos una imagen de relleno
+        const pathNoImage= path.join(__dirname, '../assets', "no-image.jpg");
+        res.sendFile( pathNoImage );
         
     } catch (error) {
         return res.status(400).json({
